@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,7 +13,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HeaderComponent } from './header/header.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NoopInterceptor } from './http-interceptors/noop-interceptor';
+import { WeatherService } from './weather.service';
+
 
 
 @NgModule({
@@ -24,6 +27,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -39,7 +43,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     //   registrationStrategy: 'registerWhenStable: 30000'
     // })
   ],
-  providers: [],
+  providers: [ { provide: HTTP_INTERCEPTORS, useClass: NoopInterceptor, multi: true },],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

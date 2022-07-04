@@ -1,12 +1,18 @@
-<mat-form-field>
-<input matInput placeholder="Enter City" #cityCtrl
-(keyup)="search(cityCtrl.value)" >
+<mat-form-field [formGroup]="form">
+<input  formControlName="val" matInput placeholder="Enter City" #cityCtrl
+> <!--(keyup)="search(cityCtrl.value)" -->
 <mat-icon matSuffix
 (click)="search(cityCtrl.value)" >
 search
 </mat-icon>
 </mat-form-field>
-<mat-card *ngIf="weather">
+<div *ngIf="!isCityFound.isFound">
+    {{isCityFound.errorMessage}}
+    <!-- city was not found -->
+</div>
+
+<mat-card *ngIf="weather && isCityFound.isFound">
+   
     <mat-card-header>
     <mat-card-title>{{weather.name}},
     {{weather.sys.country}}</mat-card-title>

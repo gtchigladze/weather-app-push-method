@@ -1,6 +1,6 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, catchError, debounceTime, Observable, pipe, Subject, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Weather } from './weather';
 
@@ -15,7 +15,7 @@ export class WeatherService {
   // weather$: Observable<any> = this.subject.asObservable();
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,) { }
   getWeather(city: string): Observable<Weather>{
     const options = new HttpParams()
     .set('units', 'metric')
@@ -25,12 +25,8 @@ export class WeatherService {
     return this.http.get<Weather>(environment.apiUrl + 'weather', {params: options})
   }
 
-  // changeCity(city: string) {
-  //   this.subject.next(city)
-  // }
-
   search(city: string){
-    this.getWeather(city).subscribe((res:any) => {this.subject.next(res)})
+    this.getWeather(city).subscribe(res => { this.subject.next(res) })
     }
 
     getWeathers(): Observable<any>{
@@ -38,12 +34,23 @@ export class WeatherService {
     }
   
 
+    // private handleError(error: HttpErrorResponse) {
+    //   var message = ''
+    //   if (error.status === 0) {
+    //     // A client-side or network error occurred. Handle it accordingly.
+    //     console.error('An error occurred:', error.error);
+    //   } else {
+    //     // The backend returned an unsuccessful response code.
+    //     // The response body may contain clues as to what went wrong.
+    //     console.error(
+    //       `Backend returned code ${error.status}, body was: `, error.error.message);
+    //       message = error.error.message
+    //   }
+    //   // Return an observable with a user-facing error message.
+    //   return throwError(() => new Error(message));
+    // }
 
-  
-  
-
-
-
+    
 
 
 }
