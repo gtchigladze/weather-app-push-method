@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, fromEvent, map, Observable, Subject, Subscription, switchMap, tap, interval } from 'rxjs';
 import { Weather } from '../weather';
 import { WeatherService } from '../weather.service';
 import { debounce } from "rxjs/operators";
+import {  finalize } from 'rxjs/operators';
+import { LoadingService } from '../loader/loading.service';
 @Component({
   selector: 'app-weather',
   templateUrl: './weather.component.html',
@@ -11,11 +13,12 @@ import { debounce } from "rxjs/operators";
 })
 
 
-export class WeatherComponent implements OnInit {
+export class WeatherComponent implements OnInit ,OnDestroy {
   length: any;
   weather: Weather | undefined;
   form!: FormGroup;
-  
+  subscription!: Subscription
+  subscription2!: Subscription 
   // isCityFound: boolean = false;
 
   isCityFound =  {
@@ -26,7 +29,7 @@ export class WeatherComponent implements OnInit {
  vm$ = this.weatherService.getWeathers();
  
 
-  constructor(private weatherService: WeatherService, private fb: FormBuilder) { }
+  constructor(private weatherService: WeatherService, private fb: FormBuilder,  private loadingService: LoadingService) { }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -47,7 +50,8 @@ export class WeatherComponent implements OnInit {
 
   search(city: string){
    if(this.form.valid){
-    this.weatherService.getWeather(city).subscribe(weather => { 
+    this.loadingService.start()
+   this.subscription =  this.weatherService.getWeather(city).pipe(finalize(()=>this.loadingService.stop())).subscribe(weather => { 
       
    this.weather = weather
    this.isCityFound.isFound = true;
@@ -79,7 +83,12 @@ export class WeatherComponent implements OnInit {
 
  
 get(){
-  this.weatherService.getWeathers().subscribe(res => {this.weather = res, console.log(res)})
+ this.subscription2 =  this.weatherService.getWeathers().subscribe(res => {this.weather = res, console.log(res)})
+}
+
+ngOnDestroy(): void {
+this.subscription.unsubscribe()
+this.subscription2.unsubscribe()
 }
 
 }

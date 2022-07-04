@@ -16,6 +16,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NoopInterceptor } from './http-interceptors/noop-interceptor';
 import { WeatherService } from './weather.service';
+import { LoaderComponent } from './loader/loader.component';
+
 
 
 
@@ -23,7 +25,9 @@ import { WeatherService } from './weather.service';
   declarations: [
     AppComponent,
     WeatherComponent,
-    HeaderComponent
+    HeaderComponent,
+    LoaderComponent,
+    
   ],
   imports: [
     BrowserModule,
